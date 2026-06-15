@@ -12,7 +12,8 @@ class FonnteGatewayService
 
     public function __construct()
     {
-        $this->token = config('services.fonnte.token', '');
+        $dbToken = \App\Models\WaSetting::where('key', 'fonnte_token')->value('value');
+        $this->token = $dbToken ?: config('services.fonnte.token', '');
     }
 
     public function sendMessage($phone, $message)
@@ -22,19 +23,78 @@ class FonnteGatewayService
             return false;
         }
 
+        // Sanitize phone number (remove non-digits like +, -, spaces)
+        $phone = preg_replace('/[^0-9]/', '', $phone);
+
         try {
             $response = Http::withHeaders([
                 'Authorization' => $this->token,
             ])->post($this->apiUrl, [
-                'target' => $phone,
-                'message' => $message,
-                'delay' => '2',
-                'countryCode' => '62',
-            ]);
+                        'target' => $phone,
+                        'message' => $message,
+                        'delay' => '2',
+                        'countryCode' => '62',
+                    ]);
 
             return $response->json();
         } catch (\Exception $e) {
             Log::error("Failed to send message via Fonnte: " . $e->getMessage());
+            return false;
+        }
+    }
+    public function getDeviceStatus()
+    {
+        if (empty($this->token)) {
+            return false;
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => $this->token,
+            ])->post('https://api.fonnte.com/device');
+
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error("Failed to check Fonnte device status: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getQrCode()
+    {
+        if (empty($this->token)) {
+            return false;
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => $this->token,
+                'Content-Type' => 'application/json',
+            ])->post('https://api.fonnte.com/qr', [
+                        'type' => 'base64'
+                    ]);
+
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error("Failed to get Fonnte QR Code: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function disconnectDevice()
+    {
+        if (empty($this->token)) {
+            return false;
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => $this->token,
+            ])->post('https://api.fonnte.com/disconnect');
+
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error("Failed to disconnect Fonnte device: " . $e->getMessage());
             return false;
         }
     }

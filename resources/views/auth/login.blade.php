@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AgriMessage - Sistem Komunikasi dan Siaran Pesan untuk Petani">
-    <title>Masuk - AgriMessage</title>
+    <meta name="description"
+        content="SAPA MASPUL (Sistem Aplikasi Pesan Agrikultur Massenrempulu) - Sistem Komunikasi dan Siaran Pesan untuk Petani">
+    <title>Masuk - SAPA MASPUL</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800&display=swap" rel="stylesheet" />
@@ -20,9 +21,9 @@
 
         .login-bg {
             background-color: #064e3b;
-            background-image:
-                radial-gradient(ellipse 80% 60% at 50% 0%, rgba(16, 185, 129, 0.25), transparent),
-                radial-gradient(ellipse 60% 50% at 80% 100%, rgba(5, 150, 105, 0.15), transparent);
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.85)), url("{{ asset('maspul.png') }}");
+            background-size: cover;
+            background-position: center;
         }
 
         .leaf-pattern {
@@ -103,12 +104,14 @@
 
         <!-- Panel Kiri: Branding / Ilustrasi (tersembunyi di mobile) -->
         <div
-            class="hidden lg:flex lg:w-1/2 xl:w-[55%] login-bg leaf-pattern relative overflow-hidden items-center justify-center p-12">
+            class="hidden lg:flex lg:w-1/2 xl:w-[55%] login-bg relative overflow-hidden items-center justify-center p-12">
             <!-- Elemen dekoratif -->
             <div class="absolute top-10 left-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl"></div>
             <div class="absolute bottom-20 right-10 w-96 h-96 bg-teal-400/10 rounded-full blur-3xl"></div>
-            <div class="absolute top-1/4 right-1/4 w-2 h-2 bg-emerald-400/40 rounded-full pulse-ring"></div>
-            <div class="absolute bottom-1/3 left-1/3 w-1.5 h-1.5 bg-green-300/50 rounded-full pulse-ring"
+            <div
+                class="absolute top-1/4 right-1/4 w-3 h-3 bg-white/80 rounded-full pulse-ring shadow-[0_0_15px_rgba(255,255,255,0.5)]">
+            </div>
+            <div class="absolute bottom-1/3 left-1/3 w-2 h-2 bg-white/80 rounded-full pulse-ring shadow-[0_0_10px_rgba(255,255,255,0.5)]"
                 style="animation-delay: 1s;"></div>
 
             <div class="relative z-10 max-w-lg text-center">
@@ -116,8 +119,9 @@
                 <div class="mb-10 flex justify-center">
                     <div class="relative">
                         <div
-                            class="w-28 h-28 bg-white/10 rounded-3xl flex items-center justify-center border border-white/10 float-slow shadow-2xl shadow-black/10">
-                            <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="w-28 h-28 bg-white/20 backdrop-blur-xl rounded-3xl flex items-center justify-center border border-white float-slow shadow-2xl shadow-black/50">
+                            <svg class="w-16 h-16 text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.8)]" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
                                 </path>
@@ -125,15 +129,16 @@
                         </div>
                         <!-- Satelit kecil -->
                         <div
-                            class="absolute -top-3 -right-3 w-8 h-8 bg-emerald-400/20 rounded-lg border border-emerald-400/20 flex items-center justify-center float-medium">
-                            <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="absolute -top-3 -right-3 w-8 h-8 bg-white/20 backdrop-blur-md rounded-lg border border-white flex items-center justify-center float-medium shadow-lg">
+                            <svg class="w-4 h-4 text-emerald-600 drop-shadow-[0_0_12px_rgba(255,255,255,0.8)]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                             </svg>
                         </div>
-                        <div class="absolute -bottom-2 -left-4 w-7 h-7 bg-teal-400/20 rounded-lg border border-teal-400/20 flex items-center justify-center float-medium"
+                        <div class="absolute -bottom-2 -left-4 w-7 h-7 bg-white/95 backdrop-blur-md rounded-lg border border-white flex items-center justify-center float-medium shadow-lg"
                             style="animation-delay: 1.2s;">
-                            <svg class="w-3.5 h-3.5 text-teal-300" fill="none" stroke="currentColor"
+                            <svg class="w-3.5 h-3.5 text-emerald-600 drop-shadow-sm" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z">
@@ -143,10 +148,13 @@
                     </div>
                 </div>
 
-                <h1 class="text-4xl xl:text-5xl font-extrabold text-white leading-tight tracking-tight">
-                    Agri<span class="text-emerald-300">Message</span>
+                <h1 class="text-4xl xl:text-5xl font-extrabold text-white leading-tight tracking-tight drop-shadow-lg">
+                    SAPA MASPUL
                 </h1>
-                <p class="mt-4 text-lg text-emerald-100/80 leading-relaxed max-w-md mx-auto">
+                <p class="mt-4 text-lg text-white leading-relaxed max-w-md mx-auto font-semibold drop-shadow-md">
+                    (Sistem Aplikasi Pesan Agrikultur Massenrempulu)
+                </p>
+                <p class="mt-2 text-md text-white leading-relaxed max-w-md mx-auto drop-shadow-md font-medium">
                     Platform komunikasi terpadu untuk menjangkau dan memberdayakan petani melalui pesan WhatsApp yang
                     terstruktur.
                 </p>
@@ -154,7 +162,7 @@
 
             <!-- Footer pada panel kiri -->
             <div class="absolute bottom-6 left-0 right-0 text-center">
-                <p class="text-xs text-emerald-200/40">&copy; {{ date('Y') }} AgriMessage &middot; Dinas Pertanian</p>
+                <p class="text-xs text-emerald-200/40">&copy; {{ date('Y') }} SAPA MASPUL &middot; Dinas Pertanian</p>
             </div>
         </div>
 
@@ -171,7 +179,7 @@
                             </path>
                         </svg>
                     </div>
-                    <h1 class="text-2xl font-extrabold text-gray-900">Agri<span class="text-emerald-600">Message</span>
+                    <h1 class="text-2xl font-extrabold text-gray-900">SAPA <span class="text-emerald-600">MASPUL</span>
                     </h1>
                 </div>
 

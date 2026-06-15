@@ -15,20 +15,20 @@ class InboxApiController extends Controller
     public function getUpdates(Request $request, $chatId)
     {
         $chat = IncomingChat::with('farmer')->findOrFail($chatId);
-        
+
         $query = ChatReply::where('incoming_chat_id', $chatId)->orderBy('created_at', 'asc');
-        
+
         if ($request->has('last_id')) {
             $query->where('id', '>', $request->last_id);
         }
-        
+
         $newReplies = $query->get();
-        
+
         // Mark chat as read if there are new farmer messages
         if ($newReplies->where('sender_type', 'farmer')->count() > 0) {
             $chat->update(['is_read' => true]);
         }
-        
+
         $formattedReplies = $newReplies->map(function($reply) {
             return [
                 'id' => $reply->id,
@@ -37,7 +37,7 @@ class InboxApiController extends Controller
                 'time' => $reply->created_at->format('H:i')
             ];
         });
-        
+
         return response()->json([
             'success' => true,
             'replies' => $formattedReplies
@@ -54,9 +54,9 @@ class InboxApiController extends Controller
             ->orderBy('updated_at', 'desc')
             ->take(5)
             ->get();
-            
+
         $unreadCount = IncomingChat::where('is_read', false)->count();
-        
+
         $notifications = $unreadChats->map(function($chat) {
             $name = $chat->farmer ? $chat->farmer->name : $chat->phone;
             return [
@@ -67,7 +67,7 @@ class InboxApiController extends Controller
                 'link' => route('inbox.index', ['chat' => $chat->id])
             ];
         });
-        
+
         return response()->json([
             'success' => true,
             'unread_count' => $unreadCount,

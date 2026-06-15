@@ -11,6 +11,7 @@ use App\Http\Controllers\RegionController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PengaturanWaController;
 
 // Redirect root to dashboard
 Route::get('/', function () {
@@ -37,6 +38,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/inbox/{chat}/reply', [InboxController::class, 'reply'])->name('inbox.reply');
 
     // Master Data
+    Route::get('petani/template', [FarmerController::class, 'template'])->name('petani.template');
+    Route::post('petani/import', [FarmerController::class, 'import'])->name('petani.import');
+    Route::get('petani/export', [FarmerController::class, 'export'])->name('petani.export');
     Route::resource('petani', FarmerController::class)->except(['create', 'show', 'edit']);
     Route::resource('kelompok-tani', FarmerGroupController::class)->except(['create', 'show', 'edit']);
     Route::resource('wilayah', RegionController::class)->except(['create', 'show', 'edit']);
@@ -51,12 +55,13 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->group(function () {
         Route::resource('pengguna', UserController::class)->except(['create', 'show', 'edit']);
 
-        Route::get('/pengaturan-wa', function () {
-            return view('pengaturan-wa.index');
-        })->name('pengaturan-wa.index');
+        Route::get('/pengaturan-wa', [PengaturanWaController::class, 'index'])->name('pengaturan-wa.index');
+        Route::post('/pengaturan-wa/disconnect', [PengaturanWaController::class, 'disconnect'])->name('pengaturan-wa.disconnect');
+        Route::post('/pengaturan-wa/settings', [PengaturanWaController::class, 'updateSettings'])->name('pengaturan-wa.settings');
     });
 
-    Route::get('/arsip', function () {
-        return view('arsip.index');
-    })->name('arsip.index');
+    Route::get('/arsip', [App\Http\Controllers\ArsipController::class, 'index'])->name('arsip.index');
+    Route::post('/arsip/destroy-all', [App\Http\Controllers\ArsipController::class, 'destroyAll'])->name('arsip.destroy-all');
+    Route::get('/arsip/{type}/{id}', [App\Http\Controllers\ArsipController::class, 'show'])->name('arsip.show');
+    Route::delete('/arsip/{type}/{id}', [App\Http\Controllers\ArsipController::class, 'destroy'])->name('arsip.destroy');
 });

@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Hash;
 class DatabaseSeeder extends Seeder
 {
     /**
-        * Seed the application's database.
-        */
+     * Seed the application's database.
+     */
     public function run(): void
     {
         // Admin
         User::updateOrCreate(
-            ['email' => 'admin@agrimessage.com'],
+            ['email' => 'admin@sapamaspul.com'],
             [
                 'name' => 'Administrator',
                 'password' => Hash::make('password'),
@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
 
         // Penyuluh
         User::updateOrCreate(
-            ['email' => 'penyuluh@agrimessage.com'],
+            ['email' => 'penyuluh@sapamaspul.com'],
             [
                 'name' => 'Budi Penyuluh',
                 'password' => Hash::make('password'),

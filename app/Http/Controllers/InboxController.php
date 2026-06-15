@@ -16,19 +16,41 @@ class InboxController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where('phone', 'like', "%{$search}%")
-                  ->orWhereHas('farmer', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  });
+                ->orWhereHas('farmer', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
         }
 
         $chats = $query->get();
-        
+
+        // Auto-link farmer if missing
+        foreach ($chats as $chat) {
+            if (!$chat->farmer_id) {
+                $phone = $chat->phone;
+                $variants = [$phone, '+' . $phone];
+                if (str_starts_with($phone, '62')) {
+                    $variants[] = '0' . substr($phone, 2);
+                } elseif (str_starts_with($phone, '0')) {
+                    $variants[] = '62' . substr($phone, 1);
+                }
+                $farmer = \App\Models\Farmer::whereIn('phone', $variants)->first();
+                if ($farmer) {
+                    $chat->farmer_id = $farmer->id;
+                    $chat->save();
+                    $chat->setRelation('farmer', $farmer);
+                }
+            }
+        }
+
         $activeChat = null;
         if ($request->has('chat')) {
-            $activeChat = IncomingChat::with(['farmer', 'replies' => function ($q) {
-                $q->orderBy('created_at', 'asc');
-            }])->find($request->chat);
-            
+            $activeChat = IncomingChat::with([
+                'farmer',
+                'replies' => function ($q) {
+                    $q->orderBy('created_at', 'asc');
+                }
+            ])->find($request->chat);
+
             // Mark as read
             if ($activeChat && !$activeChat->is_read) {
                 $activeChat->update(['is_read' => true]);

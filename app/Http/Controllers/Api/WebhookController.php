@@ -32,10 +32,15 @@ class WebhookController extends Controller
             // Incoming message
             // Clean phone number
             $phone = preg_replace('/[^0-9]/', '', $sender);
-            
-            $farmer = Farmer::where('phone', $phone)
-                ->orWhere('phone', '+'.$phone)
-                ->first();
+
+            $variants = [$phone, '+' . $phone];
+            if (str_starts_with($phone, '62')) {
+                $variants[] = '0' . substr($phone, 2);
+            } elseif (str_starts_with($phone, '0')) {
+                $variants[] = '62' . substr($phone, 1);
+            }
+
+            $farmer = Farmer::whereIn('phone', $variants)->first();
 
             $incomingChat = IncomingChat::firstOrCreate(
                 ['phone' => $phone],
@@ -52,6 +57,29 @@ class WebhookController extends Controller
                 'sender_type' => 'farmer',
                 'message' => $message
             ]);
+
+            // Auto-reply logic
+            $autoReplyEnabled = \App\Models\WaSetting::where('key', 'auto_reply_enabled')->value('value');
+            if ($autoReplyEnabled == '1') {
+                $now = now();
+                // Check if outside business hours: Mon-Fri, 08:00 - 16:00
+                $isWeekend = $now->isWeekend();
+                $isOutsideHours = $now->hour < 8 || $now->hour >= 16;
+
+                if ($isWeekend || $isOutsideHours) {
+                    $autoReplyMessage = \App\Models\WaSetting::where('key', 'auto_reply_message')->value('value');
+                    if ($autoReplyMessage) {
+                        $fonnteService = new \App\Services\FonnteGatewayService();
+                        $fonnteService->sendMessage($phone, $autoReplyMessage);
+
+                        ChatReply::create([
+                            'incoming_chat_id' => $incomingChat->id,
+                            'sender_type' => 'admin', // or 'system'
+                            'message' => $autoReplyMessage
+                        ]);
+                    }
+                }
+            }
 
             return response()->json(['success' => true, 'message' => 'Incoming message saved']);
         }
